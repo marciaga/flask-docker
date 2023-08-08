@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  api:
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile-dev
+    command: flask run --host 0.0.0.0
+    volumes:
+      - .:/app
+    ports:
+      - 5000:5000
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - postgres
+
+  postgres:
+    restart: always
+    image: postgres:14
+    ports:
+      - 5455:5432
+    env_file:
+      - ./.env.dev
+    volumes:
+      - ./flask-app-db:/var/lib/postgresql/data/
+
+volumes:
+  flask-app-db:
+    name: flask-app-db
